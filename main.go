@@ -1,16 +1,17 @@
 package main
 
-import(
-  "fmt"
-  "net/http"
+import (
+	"fmt"
+	"log"
+	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-  http.ServeFile(w, r, "./static/index.html")
-}
-
 func main() {
-  fmt.Println("running...")
-  http.HandleFunc("/", handler)
-  http.ListenAndServe(":8080", nil)
+     fileServer := http.FileServer(http.Dir("./static"))
+     http.Handle("/", fileServer)
+
+     fmt.Printf("Starting server at port 8080\n")
+     if err := http.ListenAndServe(":8080", nil); err != nil {
+          log.Fatal(err)
+     }
 }
